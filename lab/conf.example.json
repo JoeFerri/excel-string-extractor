@@ -1,0 +1,113 @@
+{
+  "file": {
+    "name": "test_list",
+    "path" : "./",
+    "label" : "tl",
+    "is_list": true,
+	  "list" : {
+      "list_sheet": "LIST",
+      "config_sheet": "CONFIG"
+    },
+    "format": "xlsx"
+  },
+  "out": "output",
+  "ext_out": "xlsx",
+  "unique" : false,
+  "unique_count" : true,
+  "delimiter": ";",
+  "multi_proc": 4,
+  "multi_thr": 8,
+  "digit": false,
+  "word": true,
+  "text": false,
+  "string": false,
+  "raw": false,
+  "regex": "test-[a-bA-Z]*",
+  "include": [
+    {
+      "column" : "file",
+      "new_name" : "FILE"
+	  },
+    {
+      "column" : "sheet",
+      "new_name" : "SHEET"
+    },
+    {
+      "column" : "seq",
+      "new_name" : "",
+      "level" : 2
+    },
+    {
+      "column" : "type",
+      "new_name" : ""
+    }
+  ],
+  "rename": [
+    {
+      "column" : "value",
+      "new_name" : "VALUE"
+    },
+    {
+      "column" : "seq",
+      "new_name" : "PROG"
+    },
+    {
+      "column" : "count",
+      "new_name" : "COUNT"
+    }
+  ],
+  "custom": [
+    {
+      "column" : "COL 1",
+      "regex" : "test1-[a-bA-Z]*"
+    },
+    {
+      "column" : "COL 2",
+      "regex" : "test2-[a-bA-Z]*"
+    }
+  ],
+  "unique_file": [
+    "t1"
+  ],
+  "unique_sheet": [],
+  "multi_file": {
+    "is_multi_file": false,
+    "out": [
+      {
+        "name" : "t1",
+        "new_name" : "t1.xlsx"
+      },
+      {
+        "name" : "test-2.xlsx",
+        "new_name" : "t2"
+      },
+      {
+        "name" : "test-3.xlsx",
+        "new_name" : "t3.csv"
+      }
+    ]
+  },
+  "multi_file_column": {
+    "is_multi_file_column": false,
+	  "out": [
+      {
+        "column" : "COL 1",
+        "new_name" : "c1.xlsx"
+      },
+      {
+        "column" : "COL 2",
+        "new_name" : "c2"
+      },
+      {
+        "column" : "value",
+        "new_name" : "v.csv"
+      }
+	  ]
+  },
+  "label-name": [
+    {
+      "name" : "test-1.xlsx",
+      "label" : "t1"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "file": {
+    "name": "",
+    "path" : "",
+    "label" : "",
+    "is_list": false,
+	  "list" : {
+      "list_sheet": "",
+      "config_sheet": ""
+    },
+    "format": "xlsx"
+  },
+  "out": "output",
+  "ext_out": "xlsx",
+  "unique" : false,
+  "unique_count" : true,
+  "delimiter": ";",
+  "multi_proc": 4,
+  "multi_thr": 8,
+  "digit": false,
+  "word": false,
+  "text": false,
+  "string": false,
+  "raw": true,
+  "regex": "",
+  "include": [
+    {
+      "column" : "file",
+      "new_name" : ""
+	  },
+    {
+      "column" : "sheet",
+      "new_name" : ""
+    },
+    {
+      "column" : "seq",
+      "new_name" : "",
+      "level" : 2
+    },
+    {
+      "column" : "type",
+      "new_name" : ""
+    }
+  ],
+  "rename": [
+    {
+      "column" : "value",
+      "new_name" : ""
+    },
+    {
+      "column" : "count",
+      "new_name" : ""
+    }
+  ],
+  "custom": [],
+  "unique_file": [],
+  "unique_sheet": [],
+  "multi_file": {
+    "is_multi_file": false,
+    "out": []
+  },
+  "multi_file_column": {
+    "is_multi_file_column": false,
+	  "out": []
+  },
+  "label-name": []
+}

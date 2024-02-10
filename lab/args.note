@@ -1,0 +1,24 @@
+
+-u   |  --unique
+-uf  |  --unique-file      "<file_1>,...,<file_n>"
+-us  |  --unique-sheet     "<sheet_1>,...,<sheet_n>"
+-l   |  --list             <file_name> [<foglio_lista>]
+-lc  |  --list-config      <file_name> <foglio_lista> <foglio_configurazione>
+-co  |  --config           <file.json>
+-o   |  --out              <file_output>
+-eo  |  --ext-out          <formato>
+-de  |  --delimiter        <delim>
+-mp  |  --multi-proc       <num_proc>
+-mt  |  --multi-thr        <num_thr>
+-d   |  --digit
+-w   |  --word
+-t   |  --text
+-s   |  --string
+-r   |  --raw
+-re  |  --regex             <pattern>
+-i   |  --include           "[file=<new_name>],[sheet=<new_name>],[seq=<new_name> 0|1|2|3],[type=<new_name>]"
+-rn  |  --rename            "<colonna_1>=<new_name_1>,<colonna_2>=<new_name_2>,..."
+-c   |  --custom            "<colonna_1>::<regex_1> <colonna_2>::<regex_2> ... <colonna_n>::<regex_n>"
+-mf  |  --multi-file        ["<nome_file_1>=<nuovo_nome_file_1>, <...>"]
+-mfc |  --multi-file-column ["<col_1>=<new_col_1>,<col_2>,...,<col_n>=<new_col_n>"]
+-ln  |  --label-name        "<col_i>==<label_i>,<file_j>==<label_j>,..."
