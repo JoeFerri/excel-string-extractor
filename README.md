@@ -10,11 +10,58 @@ exsextractor is a Python script that scans Excel and CSV files, extracting all s
 1.0.0-alpha
 ---
 
-## Installation (not yet working)
+## Installation (!!!not yet working!!!)
 ```sh
-pip install exsextractor (not yet working)
+pip install exsextractor (!!!not yet working!!!)
 ```
 ---
+
+## Commands for installing and building the package within the virtual environment
+```shell
+$ cd PATH\excel-string-extractor
+# create the virtual environment
+$ python -m venv .venv
+# activate the virtual environment
+$ .venv\Scripts\activate
+
+# install dependencies in the virtual environment
+(.venv) $ pip install pytest
+(.venv) $ pip install wheel
+(.venv) $ pip install twine
+(.venv) $ pip install tox
+(.venv) $ pip install openpyxl
+
+# install the package in the virtual environment
+  # method 1: -e stands for editor mode
+  (.venv) $ pip install -e .
+  # method 2: install the package normally in build
+  (.venv) $ pip install .
+
+# create the dist folder
+(.venv) $ python setup.py sdist
+(.venv) $ python setup.py bdist_wheel
+# check the files
+(.venv) $ twine check dist/*
+# create the requirements.txt file
+(.venv) $ pip freeze > requirements.txt
+# check the style of the python code
+(.venv) $ flake8 src tests
+
+# execute the integrated package test
+(.venv) $ python
+(.venv) >>> import exsextractor as ex
+(.venv) >>> ex.test()
+
+# execute the test
+(.venv) $ cd path/test
+  # Execute the test function with “verbose” reporting mode:
+  (.venv) $ pytest
+  # Execute the test function with “quiet” reporting mode:
+  (.venv) $ pytest -q
+
+# uninstall the package
+(.venv) $ pip uninstall exsextractor
+```
 
 ## Documentation
 For the documentation see the notes inside the source code or [wiki page](https://github.com/JoeFerri/excel-string-extractor/wiki)
