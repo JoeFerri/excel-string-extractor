@@ -1,3 +1,5 @@
+"""Excel String Extractor"""
+
 # exsextractor.py
 
 

@@ -1,3 +1,3 @@
-from .utils import *
+from .utils import DictTestCase
 
-__all__ = []
+__all__ = [DictTestCase]

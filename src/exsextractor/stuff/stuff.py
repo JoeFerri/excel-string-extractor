@@ -1,3 +1,6 @@
+"""Various stuff functions."""
+
+
 def int_stuff(a : int, b : int):
     return a + b
 
