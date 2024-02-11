@@ -1,3 +1,8 @@
+"""Various exsextractor tests."""
+
+
+import unittest
+# from src.exsextractor.exsextractor import test
 
 # !DEV -----------------------
 # DEBUG: to be removed before publishing
@@ -6,9 +11,6 @@ import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src/exsextractor')))
 # !DEV ----------------------
-
-import unittest
-# from src.exsextractor.exsextractor import test
 
 
 # TODO:
