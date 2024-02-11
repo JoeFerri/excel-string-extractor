@@ -1,36 +1,32 @@
-[![GitHub issues](https://img.shields.io/github/issues/JoeFerri/excel-string-extractor)](https://github.com/JoeFerri/excel-string-extractor/issues)
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](code_of_conduct-eng.md)
+======================
+Excel String Extractor
+======================
 
-# Excel String Extractor
 exsextractor is a Python script that scans Excel and CSV files, extracting all strings from every cell and consolidating them into one or more output files.
 
----
+Version
+-------
 
-## Version
 1.0.0-alpha
----
 
-## Installation (not yet working)
-```sh
-pip install exsextractor (not yet working)
-```
----
+Installation (not yet working)
+-------------------------------
 
-## Documentation
-For the documentation see the notes inside the source code or [wiki page](https://github.com/JoeFerri/excel-string-extractor/wiki)
+.. code-block:: sh
 
----
+   pip install exsextractor (not yet working)
 
-### Code of conduct
-[ENG](code_of_conduct-eng.md)
+Documentation
+-------------
 
-[ITA](code_of_conduct-ita.md)
+For the documentation see the notes inside the source code or `wiki page <https://github.com/JoeFerri/excel-string-extractor/wiki>`_.
 
----
 
-# License 
+License
+-------
 
-## MIT license 
+MIT license
+~~~~~~~~~~~
 
 Copyright (c) 2024 Giuseppe Ferri <jfinfoit@gmail.com>
 
