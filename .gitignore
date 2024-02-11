@@ -1,7 +1,7 @@
 # exsextractor
 # Copyright (c) 2024
-COMMANDS
-NOTE
+project/COMMANDS
+project/NOTE
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
