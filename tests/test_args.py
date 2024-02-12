@@ -1,10 +1,8 @@
-"""Various utils tests."""
+"""Various args tests."""
 
 
-from src.exsextractor.utils import (
-    safe_repr,
-    DictTestCase,
-    nargs_range
+from src.exsextractor.args import (
+    parse_args
 )
 import unittest
 

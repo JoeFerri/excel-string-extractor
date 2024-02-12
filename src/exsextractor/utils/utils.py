@@ -2,6 +2,8 @@
 
 from unittest import TestCase
 
+import argparse
+
 
 _MAX_LENGTH = 80
 
@@ -44,9 +46,10 @@ class DictTestCase (TestCase):
             if key not in dictionary:
                 missing.append(key)
             elif value != dictionary[key]:
-                mismatched.append('%s, expected: %s, actual: %s' %
-                                  (safe_repr(key), safe_repr(value),
-                                   safe_repr(dictionary[key])))
+                mismatched.append(
+                    '%s, expected: %s, actual: %s' %
+                    (safe_repr(key), safe_repr(value), safe_repr(dictionary[key]))
+                )
 
         if not (missing or mismatched):
             return
@@ -60,3 +63,15 @@ class DictTestCase (TestCase):
             standardMsg += 'Mismatched values: %s' % ','.join(mismatched)
 
         self.fail(self._formatMessage(msg, standardMsg))
+
+
+def nargs_range(nmin: int, nmax: int) -> argparse.Action:
+    """https://stackoverflow.com/a/4195302"""
+    class NArgsRange (argparse.Action):
+        def __call__(self, parser, args, values, option_string=None):
+            if not nmin <= len(values) <= nmax:
+                msg = 'argument "{f}" requires between {nmin} and {nmax} arguments'.format(
+                    f=self.dest, nmin=nmin, nmax=nmax)
+                raise argparse.ArgumentError(self, msg)
+            setattr(args, self.dest, values)
+    return NArgsRange
