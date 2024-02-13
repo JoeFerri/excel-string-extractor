@@ -4,7 +4,9 @@
 from src.exsextractor.utils import (
     safe_repr,
     DictTestCase,
-    nargs_range
+    nargs_range,
+    bool_parser,
+    pair_parser
 )
 import unittest
 

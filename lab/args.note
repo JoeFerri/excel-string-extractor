@@ -7,18 +7,24 @@
 -l   |  --list             <file_name> [<foglio_lista>]
 -lc  |  --list-config      <file_name> <foglio_lista> <foglio_configurazione>
 -co  |  --config           <file.json>
+-gcj |  --gen-config-json
+-gcx |  --gen-config-xlsx
 -o   |  --out              <file_output>
 -fo  |  --format-out       <formato>
 -de  |  --delimiter        <delim>
 -mp  |  --multi-proc       <num_proc>
 -mt  |  --multi-thr        <num_thr>
+-oc  |  --one-column-capture
+-vl  |  --value
 -d   |  --digit
 -w   |  --word
 -t   |  --text
 -s   |  --string
 -r   |  --raw
 -re  |  --regex             <pattern>
--ic  |  --include-column    "[file=<new_name>],[sheet=<new_name>],[seq=<new_name> 0|1|2|3],[type=<new_name>]"
+-ex  |  --exclude-column    <colonna_1> <colonna_2> ... <colonna_n>
+-ic  |  --include-column    "<colonna_1> <colonna_2> ... <colonna_n>"
+-seq |  --sequence          <code>
 -rn  |  --rename            "<colonna_1>=<new_name_1>,<colonna_2>=<new_name_2>,..."
 -c   |  --custom            "<colonna_1>::<regex_1> <colonna_2>::<regex_2> ... <colonna_n>::<regex_n>"
 -mf  |  --multi-file        ["<nome_file_1>=<nuovo_nome_file_1>, <...>"]

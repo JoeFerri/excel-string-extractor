@@ -1,19 +1,23 @@
 """Args for exsextractor."""
 
 from .utils import nargs_range
+from .utils import bool_parser
+from .utils import pair_parser
 from . import __version__
 import argparse
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog='Excel String Extractor CLI (exsextractor)',
         description='''exsextractor is a Python script that scans Excel and CSV files,
 extracting all strings from every cell and consolidating them into one or more output files.''',
         epilog='''.
 .
+. . . Copyright (c) 2024 Giuseppe Ferri <jfinfoit@gmail.com>
+. . . Licensed under the MIT License.
 .
-. . . . Copyright (c) 2024 Giuseppe Ferri <jfinfoit@gmail.com> ''',
+.''',
         formatter_class=argparse.RawTextHelpFormatter)
 
     parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + __version__)
@@ -92,6 +96,20 @@ If there's a conflict in the configuration files the rightmost command prevails 
         help='''the file.json is used for the processing configuration
 used instead or together with command line parameters''')
 
+    config_group.add_argument(
+        '-gcj', '--gen-config-json',
+        default=False,
+        action='store_true',
+        help='''generates a exse-config.json with the default configuration;
+the configuration file will contain all the custom values passed from the command line''')
+
+    config_group.add_argument(
+        '-gcx', '--gen-config-xlsx',
+        default=False,
+        action='store_true',
+        help='''generates a exse-config.xlsx with the default configuration;
+the configuration file will contain all the custom values passed from the command line''')
+
     output_group = parser.add_argument_group('output', 'options for output')
 
     output_group.add_argument(
@@ -149,6 +167,136 @@ max = 16 process''')
 default = 1 thread;
 max = 32 threads''')
 
+    capture_group = parser.add_argument_group('capture', '''by default only strings with at least one alphabetical character are captured;
+by default the captured strings are inserted into
+a single "value" column regardless of their capture type;
 
+the parameters -d, -w, -t, -s, -r, -re are cumulative;
+
+if -oc is set to True (default), for each output record there will be associated
+a value for the "value" column (captured string) and
+a value for the "type" column (capture type "digit", "word" , "text", "string", "raw", "regex");
+
+if -oc is set to False, for each record there will be an associated value for both the "value" column
+and the capture type column, i.e. for each record there will be both
+the "digit", "word", " columns text", "string", "raw", "regex" and the "value" column;''')
+
+    capture_group.add_argument(
+        '-oc', '--one-column-capture',
+        default=True,
+        action='store',
+        type=bool_parser,
+        choices=[True, False],
+        metavar=('SET'),
+        help='''the captured strings are inserted into a single "value" column
+regardless of their capture type (default True)''')
+
+    capture_group.add_argument(
+        '-vl', '--value',
+        default=True,
+        action='store',
+        type=bool_parser,
+        choices=[True, False],
+        metavar=('SET'),
+        help='''only strings with at least one alphabetical character are captured (default True)''')
+
+    capture_group.add_argument(
+        '-d', '--digit',
+        default=False,
+        action='store_true',
+        help='''strings of only numbers are captured (default False)''')
+
+    capture_group.add_argument(
+        '-w', '--word',
+        default=False,
+        action='store_true',
+        help='''only strings with a single word are captured (default also strings with spaces)''')
+
+    capture_group.add_argument(
+        '-t', '--text',
+        default=False,
+        action='store_true',
+        help='''only strings with alphabetical characters and 0 or n spaces are captured (default False)''')
+
+    capture_group.add_argument(
+        '-s', '--string',
+        default=False,
+        action='store_true',
+        help='''only strings with alphabetical characters (1 or n) and
+numbers (1 or m) with 0 or k intermediate spaces are captured (default False)''')
+
+    capture_group.add_argument(
+        '-r', '--raw',
+        default=False,
+        action='store_true',
+        help='''all strings are captured (default False)''')
+
+    capture_group.add_argument(
+        '-re', '--regex',
+        nargs=1,
+        default=[],
+        metavar=('PATTERN'),
+        help='''only strings matching the pattern are captured''')
+
+    columns_group = parser.add_argument_group('columns', '''options for the output columns''')
+
+    columns_group.add_argument(
+        '-ic', '--include-column',
+        nargs='+',
+        default=[],
+        metavar=('COLUMN'),
+        help='''if set, only the indicated columns will be created in the output;
+the "value" column is not affected by this parameter''')
+
+    columns_group.add_argument(
+        '-ex', '--exclude-column',
+        nargs='+',
+        default=[],
+        metavar=('COLUMN'),
+        help='''if set, the indicated columns will not be generated in the output;
+the "value" column is affected by this parameter''')
+
+    columns_group.add_argument(
+        '-rn', '--rename',
+        nargs='+',
+        default=[],
+        type=pair_parser('=', '%'),
+        metavar=('PAIR'),
+        help='''changes the column names;
+the arguments passed must follow the following pattern: <COLUMN_NAME>=<NEW_COLUMN_NAME>;
+pairs (name1,name2) are separated by spaces;
+to use the equal character you need to escape `%%=`;
+Examples:
+-rn seq=SEQ "string = COL 2" value=COL%%=3
+rename column `seq` to `SEQ`, `string` to `COL 2` and `value` to `COL=3`
+-rn 'value=\"COL%%= 3\"'
+rename the `value` column to `"COL= 3"`
+''')
+
+    columns_group.add_argument(
+        '-ln', '--label-name',
+        nargs='+',
+        default=[],
+        type=pair_parser('==', '%'),
+        metavar=('PAIR'),
+        help='''creates labels identifying files, sheets, columns,
+callable in command line commands
+to make the command line string more readable;
+the arguments passed must follow the following pattern: <COLUMN_NAME>==<LABEL>;
+to use the equal character you need to escape `%%==`;
+Examples:
+-ln file.xlsx==f1 "SHEET %%== 1 A == S1A" string==S value==V -ex V S seq
+exclude the columns value, string and seq''')
+
+    columns_group.add_argument(
+        '-seq', '--sequence',
+        default=1,
+        type=int,
+        choices=[0, 1, 2],
+        metavar=('COLUMN'),
+        help='''changes the depth level of the sequential number associated with the record;
+-ic seq 0: adds the sequential number column at cell level (never resets)
+-ic seq 1: adds the sequential number column at sheet level (resets with each sheet)
+-ic seq 2: adds the sequential number column at file level (resets with each file)''')
 
     return parser.parse_args()

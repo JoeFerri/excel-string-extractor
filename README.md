@@ -33,7 +33,9 @@ python -m exsextractor [options]
 ```
 Excel String Extractor CLI (exsextractor) [-h] [-v] [-u] [-uf FILE_NAME [FILE_NAME ...]] [-us SHEET_NAME [SHEET_NAME ...]] [-uc]
                                                  (-i FILE_NAME [FILE_NAME ...] | -l FILE_NAME [LIST_SHEET ...] | -lc FILE_NAME LIST_SHEET CONFIGURATION_SHEET)
-                                                 [-co CONFIGURATION_FILE] [-o FILE_NAME] [-eo FORMAT] [-de DELIMITER] [-mp NUM_PROC] [-mt NUM_THR]
+                                                 [-co CONFIGURATION_FILE] [-gcj] [-gcx] [-o FILE_NAME] [-fo FORMAT] [-de DELIMITER] [-mp NUM_PROC] [-mt NUM_THR] [-oc SET]       
+                                                 [-vl SET] [-d] [-w] [-t] [-s] [-r] [-re PATTERN] [-ic COLUMN [COLUMN ...]] [-ex COLUMN [COLUMN ...]] [-rn PAIR [PAIR ...]]      
+                                                 [-ln PAIR [PAIR ...]] [-seq COLUMN]
 
 exsextractor is a Python script that scans Excel and CSV files,
 extracting all strings from every cell and consolidating them into one or more output files.
@@ -61,13 +63,13 @@ files or list:
                         FILE_NAME [str]: the file name with the list of files (required);
                         LIST_SHEET [str]: the name of the sheet where the list is inserted
                         if the list is an .xlsx file, then the file names are in the first sheet in column A starting from row 1 or 2;
-                        if the file does not correspond to the Excel format and the LIST_SHEET argument is passed, the latter is ignored but a warning is generated;        
+                        if the file does not correspond to the Excel format and the LIST_SHEET argument is passed, the latter is ignored but a warning is generated;
   -lc FILE_NAME LIST_SHEET CONFIGURATION_SHEET, --list-config FILE_NAME LIST_SHEET CONFIGURATION_SHEET
                         FILE_NAME [str]: the file name with the list of files (required);
                         LIST_SHEET [str]: the name of the sheet where the list is inserted
                         CONFIGURATION_SHEET [str]: the sheet with the processing configuration
                         if the list is an .xlsx file, then the file names are in the first sheet in column A starting from row 1 or 2;
-                        if the file does not correspond to the Excel format and the LIST_SHEET argument is passed, the latter is ignored but a warning is generated;        
+                        if the file does not correspond to the Excel format and the LIST_SHEET argument is passed, the latter is ignored but a warning is generated;
 
 configuration:
   options for configuration
@@ -78,6 +80,12 @@ configuration:
   -co CONFIGURATION_FILE, --config CONFIGURATION_FILE
                         the file.json is used for the processing configuration
                         used instead or together with command line parameters
+  -gcj, --gen-config-json
+                        generates a exse-config.json with the default configuration;
+                        the configuration file will contain all the custom values passed from the command line
+  -gcx, --gen-config-xlsx
+                        generates a exse-config.xlsx with the default configuration;
+                        the configuration file will contain all the custom values passed from the command line
 
 output:
   options for output
@@ -88,7 +96,7 @@ output:
                         the default extension is ".xlsx"
   -fo FORMAT, --format-out FORMAT
                         overwrites the output file extension
-                        choices: "xlsx", "csv"
+                        choices: "xlsx", "csv";
                         default = "xlsx"
   -de DELIMITER, --delimiter DELIMITER
                         delimiter if the format is csv;
@@ -109,6 +117,68 @@ processing:
                         use NUM_THR number of threads in multithreading;
                         default = 1 thread;
                         max = 32 threads
+
+capture:
+  by default only strings with at least one alphabetical character are captured;
+  by default the captured strings are inserted into
+  a single "value" column regardless of their capture type;
+
+  the parameters -d, -w, -t, -s, -r, -re are cumulative;
+
+  if -oc is set to True (default), for each output record there will be associated
+  a value for the "value" column (captured string) and
+  a value for the "type" column (capture type "digit", "word" , "text", "string", "raw", "regex");
+
+  if -oc is set to False, for each record there will be an associated value for both the "value" column
+  and the capture type column, i.e. for each record there will be both
+  the "digit", "word", " columns text", "string", "raw", "regex" and the "value" column;
+
+  -oc SET, --one-column-capture SET
+                        the captured strings are inserted into a single "value" column
+                        regardless of their capture type (default True)
+  -vl SET, --value SET  only strings with at least one alphabetical character are captured (default True)
+  -d, --digit           strings of only numbers are captured (default False)
+  -w, --word            only strings with a single word are captured (default also strings with spaces)
+  -t, --text            only strings with alphabetical characters and 0 or n spaces are captured (default False)
+  -s, --string          only strings with alphabetical characters (1 or n) and
+                        numbers (1 or m) with 0 or k intermediate spaces are captured (default False)
+  -r, --raw             all strings are captured (default False)
+  -re PATTERN, --regex PATTERN
+                        only strings matching the pattern are captured
+
+columns:
+  options for the output columns
+
+  -ic COLUMN [COLUMN ...], --include-column COLUMN [COLUMN ...]
+                        if set, only the indicated columns will be created in the output;
+                        the "value" column is not affected by this parameter
+  -ex COLUMN [COLUMN ...], --exclude-column COLUMN [COLUMN ...]
+                        if set, the indicated columns will not be generated in the output;
+                        the "value" column is affected by this parameter
+  -rn PAIR [PAIR ...], --rename PAIR [PAIR ...]
+                        changes the column names;
+                        the arguments passed must follow the following pattern: <COLUMN_NAME>=<NEW_COLUMN_NAME>;
+                        pairs (name1,name2) are separated by spaces;
+                        to use the equal character you need to escape `%=`;
+                        Examples:
+                        -rn seq=SEQ "string = COL 2" value=COL%=3
+                        rename column `seq` to `SEQ`, `string` to `COL 2` and `value` to `COL=3`
+                        -rn 'value="COL%= 3"'
+                        rename the `value` column to `"COL= 3"`
+  -ln PAIR [PAIR ...], --label-name PAIR [PAIR ...]
+                        creates labels identifying files, sheets, columns,
+                        callable in command line commands
+                        to make the command line string more readable;
+                        the arguments passed must follow the following pattern: <COLUMN_NAME>==<LABEL>;
+                        to use the equal character you need to escape `%==`;
+                        Examples:
+                        -ln file.xlsx==f1 "SHEET %== 1 A == S1A" string==S value==V -ex V S seq
+                        exclude the columns value, string and seq
+  -seq COLUMN, --sequence COLUMN
+                        changes the depth level of the sequential number associated with the record;
+                        -ic seq 0: adds the sequential number column at cell level (never resets)
+                        -ic seq 1: adds the sequential number column at sheet level (resets with each sheet)
+                        -ic seq 2: adds the sequential number column at file level (resets with each file)
 ```
 ---
 

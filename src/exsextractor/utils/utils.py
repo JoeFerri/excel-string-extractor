@@ -3,6 +3,7 @@
 from unittest import TestCase
 
 import argparse
+import re
 
 
 _MAX_LENGTH = 80
@@ -75,3 +76,26 @@ def nargs_range(nmin: int, nmax: int) -> argparse.Action:
                 raise argparse.ArgumentError(self, msg)
             setattr(args, self.dest, values)
     return NArgsRange
+
+
+def bool_parser(s: str) -> bool | str:
+    if s.lower() == 'true':
+        return True
+    elif s.lower() == 'false':
+        return False
+    return s
+
+
+def pair_parser(sep: str = '=', escaped_sep: str = '%') -> callable:
+    def parser(s: str) -> tuple[str, str]:
+        pattern_str = f'{escaped_sep}{sep}'
+        pattern = rf'(?<!{escaped_sep}){sep}'
+        parts = re.split(pattern, s)
+
+        if len(parts) == 2:
+            s1 = parts[0].replace(pattern_str, sep)
+            s2 = parts[1].replace(pattern_str, sep)
+            return s1, s2
+        else:
+            raise ValueError("Invalid format: unable to split the string using the provided separator and escape separator")
+    return parser
