@@ -22,6 +22,21 @@ extracting all strings from every cell and consolidating them into one or more o
 
     parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + __version__)
 
+    parser.add_argument(
+        '-ln', '--label-name',
+        nargs='+',
+        default=[],
+        type=pair_parser('==', '%'),
+        metavar=('COLUMN_NAME==LABEL'),
+        help='''creates labels identifying files, sheets, columns,
+callable in command line commands
+to make the command line string more readable;
+the arguments passed must follow the following pattern: <COLUMN_NAME>==<LABEL>;
+to use the double equal character you need to escape `%%==`;
+Examples:
+-ln file.xlsx==f1 "SHEET %%== 1 A == S1A" string==S value==V -ex V S seq
+exclude the columns value, string and seq''')
+
     unique_group = parser.add_argument_group('unique', 'the output will contain unique strings')
 
     unique_group.add_argument(
@@ -261,7 +276,7 @@ the "value" column is affected by this parameter''')
         nargs='+',
         default=[],
         type=pair_parser('=', '%'),
-        metavar=('PAIR'),
+        metavar=('COLUMN_NAME=NEW_COLUMN_NAME'),
         help='''changes the column names;
 the arguments passed must follow the following pattern: <COLUMN_NAME>=<NEW_COLUMN_NAME>;
 pairs (name1,name2) are separated by spaces;
@@ -274,29 +289,29 @@ rename the `value` column to `"COL= 3"`
 ''')
 
     columns_group.add_argument(
-        '-ln', '--label-name',
-        nargs='+',
-        default=[],
-        type=pair_parser('==', '%'),
-        metavar=('PAIR'),
-        help='''creates labels identifying files, sheets, columns,
-callable in command line commands
-to make the command line string more readable;
-the arguments passed must follow the following pattern: <COLUMN_NAME>==<LABEL>;
-to use the equal character you need to escape `%%==`;
-Examples:
--ln file.xlsx==f1 "SHEET %%== 1 A == S1A" string==S value==V -ex V S seq
-exclude the columns value, string and seq''')
-
-    columns_group.add_argument(
         '-seq', '--sequence',
         default=1,
         type=int,
         choices=[0, 1, 2],
-        metavar=('COLUMN'),
+        metavar=('CODE'),
         help='''changes the depth level of the sequential number associated with the record;
 -ic seq 0: adds the sequential number column at cell level (never resets)
 -ic seq 1: adds the sequential number column at sheet level (resets with each sheet)
 -ic seq 2: adds the sequential number column at file level (resets with each file)''')
+
+    columns_group.add_argument(
+        '-c', '--custom',
+        nargs='+',
+        default=[],
+        type=pair_parser('::', '%'),
+        metavar=('COLUMN_NAME::REGEX_PATTERN'),
+        help='''includes additional n columns named COLUMN_n in which
+it respectively inserts the strings that match the regular expressions REGEX_n;
+the arguments passed must follow the following pattern: <COLUMN_NAME>::<REGEX_PATTERN>;
+pairs (name,regex) are separated by spaces;
+to use the `::` string you need to escape `%%::`;
+Examples:
+-c col1::[0-9]+ col2::[a-zA-Z]{3,8} "col3::foo bar[0-9]+"
+''')
 
     return parser.parse_args()

@@ -1,7 +1,8 @@
 
+-ln  |  --label-name        <col_i>==<label_i> <file_j>==<label_j> ...
 -u   |  --unique
--uf  |  --unique-file      "<file_1>,...,<file_n>"
--us  |  --unique-sheet     "<sheet_1>,...,<sheet_n>"
+-uf  |  --unique-file      <file_1> ... <file_n>
+-us  |  --unique-sheet     <sheet_1> ... <sheet_n>
 -uc  |  --unique-count
 -i   |  --input            <file_name>
 -l   |  --list             <file_name> [<foglio_lista>]
@@ -25,8 +26,7 @@
 -ex  |  --exclude-column    <colonna_1> <colonna_2> ... <colonna_n>
 -ic  |  --include-column    "<colonna_1> <colonna_2> ... <colonna_n>"
 -seq |  --sequence          <code>
--rn  |  --rename            "<colonna_1>=<new_name_1>,<colonna_2>=<new_name_2>,..."
--c   |  --custom            "<colonna_1>::<regex_1> <colonna_2>::<regex_2> ... <colonna_n>::<regex_n>"
--mf  |  --multi-file        ["<nome_file_1>=<nuovo_nome_file_1>, <...>"]
--mfc |  --multi-file-column ["<col_1>=<new_col_1>,<col_2>,...,<col_n>=<new_col_n>"]
--ln  |  --label-name        "<col_i>==<label_i>,<file_j>==<label_j>,..."
+-rn  |  --rename            <colonna_1>=<new_name_1> <colonna_2>=<new_name_2> ...
+-c   |  --custom            <colonna_1>::<regex_1> <colonna_2>::<regex_2> ... <colonna_n>::<regex_n>
+-mf  |  --multi-file        [<nome_file_1>=<nuovo_nome_file_1> <...>]
+-mfc |  --multi-file-column [<col_1>=<new_col_1> <col_2> ... <col_n>=<new_col_n>]
