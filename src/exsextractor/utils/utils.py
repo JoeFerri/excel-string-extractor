@@ -89,7 +89,7 @@ def bool_parser(s: str) -> bool | str:
 def pair_parser(sep: str = '=', escaped_sep: str = '%') -> callable:
     def parser(s: str) -> tuple[str, str]:
         pattern_str = f'{escaped_sep}{sep}'
-        pattern = rf'(?<!{escaped_sep}){sep}'
+        pattern = rf'(?<!{escaped_sep}){sep}' # negative lookbehind
         parts = re.split(pattern, s)
 
         if len(parts) == 2:
