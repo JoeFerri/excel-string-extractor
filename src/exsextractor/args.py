@@ -4,6 +4,7 @@ from .utils import nargs_range
 from .utils import bool_parser
 from .utils import pair_parser
 from . import __version__
+import os
 import argparse
 
 
@@ -313,5 +314,23 @@ to use the `::` string you need to escape `%%::`;
 Examples:
 -c col1::[0-9]+ col2::[a-zA-Z]{3,8} "col3::foo bar[0-9]+"
 ''')
+
+    paths_group = parser.add_argument_group('paths', 'options for file system')
+
+    paths_group.add_argument(
+        '-id', '--input-directory',
+        nargs='+',
+        default=[],
+        metavar=('PATH'),
+        help='''if the input files are defined by a name or a relative path,
+the program will search for a match in all the paths provided as arguments;''')
+
+    paths_group.add_argument(
+        '-od', '--output-directory',
+        nargs=1,
+        default=[os.getcwd()],
+        metavar=('PATH'),
+        help='''specifies the output directory;
+by default the directory from which the program is launched is used''')
 
     return parser.parse_args()
