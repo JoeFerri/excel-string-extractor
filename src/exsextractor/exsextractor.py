@@ -10,3 +10,8 @@ from .args import parse_args
 
 def test():
     print(parse_args())
+
+
+def main():
+    args = parse_args()
+    input_files = args.input 

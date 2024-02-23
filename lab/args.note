@@ -4,7 +4,7 @@
 -uf  |  --unique-file      <file_1> ... <file_n>
 -us  |  --unique-sheet     <sheet_1> ... <sheet_n>
 -uc  |  --unique-count
--i   |  --input            <file_name>
+-i   |  --input            <file_name_1>, <file_name_2>, ...
 -l   |  --list             <file_name> [<foglio_lista>]
 -lc  |  --list-config      <file_name> <foglio_lista> <foglio_configurazione>
 -co  |  --config           <file.json>
@@ -28,5 +28,6 @@
 -seq |  --sequence          <code>
 -rn  |  --rename            <colonna_1>=<new_name_1> <colonna_2>=<new_name_2> ...
 -c   |  --custom            <colonna_1>::<regex_1> <colonna_2>::<regex_2> ... <colonna_n>::<regex_n>
--mf  |  --multi-file        [<nome_file_1>=<nuovo_nome_file_1> <...>]
--mfc |  --multi-file-column [<col_1>=<new_col_1> <col_2> ... <col_n>=<new_col_n>]
+-id  |  --input-directory   <path_1>,<path_2> ... <path_n>
+-od  |  --output-directory  <path>
+-mf  |  --multi-file

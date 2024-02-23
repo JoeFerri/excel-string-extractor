@@ -31,18 +31,28 @@ python -m exsextractor [options]
 
 ## Options Manual
 ```
-Excel String Extractor CLI (exsextractor) [-h] [-v] [-u] [-uf FILE_NAME [FILE_NAME ...]] [-us SHEET_NAME [SHEET_NAME ...]] [-uc]
-                                                 (-i FILE_NAME [FILE_NAME ...] | -l FILE_NAME [LIST_SHEET ...] | -lc FILE_NAME LIST_SHEET CONFIGURATION_SHEET)
-                                                 [-co CONFIGURATION_FILE] [-gcj] [-gcx] [-o FILE_NAME] [-fo FORMAT] [-de DELIMITER] [-mp NUM_PROC] [-mt NUM_THR] [-oc SET]       
-                                                 [-vl SET] [-d] [-w] [-t] [-s] [-r] [-re PATTERN] [-ic COLUMN [COLUMN ...]] [-ex COLUMN [COLUMN ...]] [-rn PAIR [PAIR ...]]      
-                                                 [-ln PAIR [PAIR ...]] [-seq COLUMN]
+Excel String Extractor CLI (exsextractor) [-h] [-v] [-ln NAME==LABEL [NAME==LABEL ...]] [-u] [-uf FILE_NAME [FILE_NAME ...]] [-us SHEET_NAME [SHEET_NAME ...]]
+                                                 [-uc] (-i FILE_NAME [FILE_NAME ...] | -l FILE_NAME [LIST_SHEET ...] | -lc FILE_NAME LIST_SHEET CONFIGURATION_SHEET) 
+                                                 [-co CONFIGURATION_FILE] [-gcj] [-gcx] [-o FILE_NAME] [-fo FORMAT] [-de DELIMITER] [-mf] [-mp NUM_PROC]
+                                                 [-mt NUM_THR] [-oc SET] [-vl SET] [-d] [-w] [-t] [-s] [-r] [-re PATTERN] [-ic COLUMN [COLUMN ...]]
+                                                 [-ex COLUMN [COLUMN ...]] [-rn COLUMN_NAME=NEW_COLUMN_NAME [COLUMN_NAME=NEW_COLUMN_NAME ...]]
+                                                 [-c COLUMN_NAME::REGEX_PATTERN [COLUMN_NAME::REGEX_PATTERN ...]] [-seq CODE] [-id PATH [PATH ...]] [-od PATH]       
 
-exsextractor is a Python script that scans Excel and CSV files,
+exsextractor is a Python script that scans Excel files,
 extracting all strings from every cell and consolidating them into one or more output files.
 
 options:
   -h, --help            show this help message and exit
   -v, --version         show program's version number and exit
+  -ln NAME==LABEL [NAME==LABEL ...], --label-name NAME==LABEL [NAME==LABEL ...]
+                        creates labels identifying files, sheets, columns,
+                        callable in command line commands
+                        to make the command line string more readable;
+                        the arguments passed must follow the following pattern: <NAME>==<LABEL>;
+                        to use the double equal character you need to escape `%==`;
+                        Examples:
+                        -ln file.xlsx==f1 "SHEET %== 1 A == S1A" string==S value==V -ex V S seq
+                        exclude the columns value, string and seq
 
 unique:
   the output will contain unique strings
@@ -63,13 +73,13 @@ files or list:
                         FILE_NAME [str]: the file name with the list of files (required);
                         LIST_SHEET [str]: the name of the sheet where the list is inserted
                         if the list is an .xlsx file, then the file names are in the first sheet in column A starting from row 1 or 2;
-                        if the file does not correspond to the Excel format and the LIST_SHEET argument is passed, the latter is ignored but a warning is generated;
+                        if the file does not correspond to the Excel format and the LIST_SHEET argument is passed, the latter is ignored but a warning is generated;   
   -lc FILE_NAME LIST_SHEET CONFIGURATION_SHEET, --list-config FILE_NAME LIST_SHEET CONFIGURATION_SHEET
                         FILE_NAME [str]: the file name with the list of files (required);
                         LIST_SHEET [str]: the name of the sheet where the list is inserted
                         CONFIGURATION_SHEET [str]: the sheet with the processing configuration
                         if the list is an .xlsx file, then the file names are in the first sheet in column A starting from row 1 or 2;
-                        if the file does not correspond to the Excel format and the LIST_SHEET argument is passed, the latter is ignored but a warning is generated;
+                        if the file does not correspond to the Excel format and the LIST_SHEET argument is passed, the latter is ignored but a warning is generated;   
 
 configuration:
   options for configuration
@@ -101,6 +111,8 @@ output:
   -de DELIMITER, --delimiter DELIMITER
                         delimiter if the format is csv;
                         default = ";"
+  -mf, --multi-file     n files are generated for n processed files (default a single overall file is generated);
+                        the output files are named by default original_file_name.{--out argument}.xlsx
 
 processing:
   Internally a fileList contains 1 or n files to be processed;
@@ -155,7 +167,7 @@ columns:
   -ex COLUMN [COLUMN ...], --exclude-column COLUMN [COLUMN ...]
                         if set, the indicated columns will not be generated in the output;
                         the "value" column is affected by this parameter
-  -rn PAIR [PAIR ...], --rename PAIR [PAIR ...]
+  -rn COLUMN_NAME=NEW_COLUMN_NAME [COLUMN_NAME=NEW_COLUMN_NAME ...], --rename COLUMN_NAME=NEW_COLUMN_NAME [COLUMN_NAME=NEW_COLUMN_NAME ...]
                         changes the column names;
                         the arguments passed must follow the following pattern: <COLUMN_NAME>=<NEW_COLUMN_NAME>;
                         pairs (name1,name2) are separated by spaces;
@@ -165,20 +177,31 @@ columns:
                         rename column `seq` to `SEQ`, `string` to `COL 2` and `value` to `COL=3`
                         -rn 'value="COL%= 3"'
                         rename the `value` column to `"COL= 3"`
-  -ln PAIR [PAIR ...], --label-name PAIR [PAIR ...]
-                        creates labels identifying files, sheets, columns,
-                        callable in command line commands
-                        to make the command line string more readable;
-                        the arguments passed must follow the following pattern: <COLUMN_NAME>==<LABEL>;
-                        to use the equal character you need to escape `%==`;
+  -c COLUMN_NAME::REGEX_PATTERN [COLUMN_NAME::REGEX_PATTERN ...], --custom COLUMN_NAME::REGEX_PATTERN [COLUMN_NAME::REGEX_PATTERN ...]
+                        includes additional n columns named COLUMN_n in which
+                        it respectively inserts the strings that match the regular expressions REGEX_n;
+                        the arguments passed must follow the following pattern: <COLUMN_NAME>::<REGEX_PATTERN>;
+                        pairs (name,regex) are separated by spaces;
+                        to use the `::` string you need to escape `%::`;
                         Examples:
-                        -ln file.xlsx==f1 "SHEET %== 1 A == S1A" string==S value==V -ex V S seq
-                        exclude the columns value, string and seq
-  -seq COLUMN, --sequence COLUMN
+                        -c col1::[0-9]+ col2::[a-zA-Z]{3,8} "col3::foo bar[0-9]+"
+  -seq CODE, --sequence CODE
                         changes the depth level of the sequential number associated with the record;
                         -ic seq 0: adds the sequential number column at cell level (never resets)
                         -ic seq 1: adds the sequential number column at sheet level (resets with each sheet)
                         -ic seq 2: adds the sequential number column at file level (resets with each file)
+                        (Default: 1)
+
+paths:
+  options for file system
+
+  -id PATH [PATH ...], --input-directory PATH [PATH ...]
+                        if the input files are defined by a name or a relative path,
+                        the program will search for a match in all the paths provided as arguments;
+  -od PATH, --output-directory PATH
+                        specifies the output directory;
+                        by default the directory from which the program is launched is used;
+                        if the directory does not exist it creates it
 ```
 ---
 

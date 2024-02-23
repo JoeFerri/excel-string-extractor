@@ -1,67 +1,55 @@
 {
-  "file": {
+  "input": [],
+  "label-name": [],
+  "unique" : false,
+  "unique-file": [],
+  "unique-sheet": [],
+  "unique-count" : true,
+  "list": {
     "name": "",
     "path" : "",
-    "label" : "",
-    "is_list": false,
-	  "list" : {
-      "list_sheet": "",
-      "config_sheet": ""
+	  "sheets" : {
+      "list-sheet": "",
+      "config-sheet": ""
     },
     "format": "xlsx"
   },
   "out": "output",
-  "ext_out": "xlsx",
-  "unique" : false,
-  "unique_count" : true,
+  "format-out": "xlsx",
   "delimiter": ";",
-  "multi_proc": 4,
-  "multi_thr": 8,
+  "multi-proc": 1,
+  "multi-thr": 1,
+  "one-column-capture": true,
+  "value": true,
   "digit": false,
   "word": false,
   "text": false,
   "string": false,
-  "raw": true,
+  "raw": false,
   "regex": "",
-  "include": [
+  "include-column": [
     {
-      "column" : "file",
-      "new_name" : ""
+      "column" : "file"
 	  },
     {
-      "column" : "sheet",
-      "new_name" : ""
+      "column" : "sheet"
     },
     {
-      "column" : "seq",
-      "new_name" : "",
-      "level" : 2
+      "column" : "seq"
     },
     {
-      "column" : "type",
-      "new_name" : ""
+      "column" : "type"
     }
   ],
-  "rename": [
-    {
-      "column" : "value",
-      "new_name" : ""
-    },
-    {
-      "column" : "count",
-      "new_name" : ""
-    }
-  ],
+  "exclude-column": [],
+  "rename": [],
   "custom": [],
-  "unique_file": [],
-  "unique_sheet": [],
-  "multi_file": {
-    "is_multi_file": false,
-    "out": []
-  },
-  "multi_file_column": {
-    "is_multi_file_column": false,
-	  "out": []
-  },
-  "label-name": []
+  "sequence": 1,
+  "input-directory": [
+    {
+      "path" : "./"
+    }
+  ],
+  "output-directory": "./",
+  "multi-file": false
 }

@@ -1,6 +1,9 @@
 
-from .exsextractor import test
+from .exsextractor import (
+    test,
+    main
+)
 
 
 if __name__ == '__main__':
-    test()
+    main()

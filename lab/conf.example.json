@@ -1,59 +1,70 @@
 {
-  "file": {
-    "name": "test_list",
+  "input": [],
+  "label-name": [
+    {
+      "name" : "test-list.xlsx",
+      "label" : "tl"
+    },
+    {
+      "name" : "test-1.xlsx",
+      "label" : "t1"
+    }
+  ],
+  "unique" : false,
+  "unique-file": [
+    "t1"
+  ],
+  "unique-sheet": [],
+  "unique-count" : true,
+  "list": {
+    "name": "test-list.xlsx",
     "path" : "./",
-    "label" : "tl",
-    "is_list": true,
-	  "list" : {
-      "list_sheet": "LIST",
-      "config_sheet": "CONFIG"
+	  "sheets" : {
+      "list-sheet": "LIST",
+      "config-sheet": "CONFIG"
     },
     "format": "xlsx"
   },
   "out": "output",
-  "ext_out": "xlsx",
-  "unique" : false,
-  "unique_count" : true,
+  "format-out": "xlsx",
   "delimiter": ";",
-  "multi_proc": 4,
-  "multi_thr": 8,
+  "multi-proc": 4,
+  "multi-thr": 8,
+  "one-column-capture": true,
+  "value": true,
   "digit": false,
   "word": true,
   "text": false,
   "string": false,
   "raw": false,
   "regex": "test-[a-bA-Z]*",
-  "include": [
+  "include-column": [
     {
-      "column" : "file",
-      "new_name" : "FILE"
+      "column" : "file"
 	  },
     {
-      "column" : "sheet",
-      "new_name" : "SHEET"
+      "column" : "sheet"
     },
     {
-      "column" : "seq",
-      "new_name" : "",
-      "level" : 2
+      "column" : "seq"
     },
     {
-      "column" : "type",
-      "new_name" : ""
+      "column" : "type"
     }
   ],
+  "exclude-column": [],
   "rename": [
     {
       "column" : "value",
-      "new_name" : "VALUE"
+      "new-name" : "VALUE"
     },
     {
       "column" : "seq",
-      "new_name" : "PROG"
+      "new-name" : "PROG"
     },
     {
       "column" : "count",
-      "new_name" : "COUNT"
+      "new-name" : "COUNT"
     }
   ],
   "custom": [
@@ -66,48 +77,12 @@
       "regex" : "test2-[a-bA-Z]*"
     }
   ],
-  "unique_file": [
-    "t1"
-  ],
-  "unique_sheet": [],
-  "multi_file": {
-    "is_multi_file": false,
-    "out": [
-      {
-        "name" : "t1",
-        "new_name" : "t1.xlsx"
-      },
-      {
-        "name" : "test-2.xlsx",
-        "new_name" : "t2"
-      },
-      {
-        "name" : "test-3.xlsx",
-        "new_name" : "t3.csv"
-      }
-    ]
-  },
-  "multi_file_column": {
-    "is_multi_file_column": false,
-	  "out": [
-      {
-        "column" : "COL 1",
-        "new_name" : "c1.xlsx"
-      },
-      {
-        "column" : "COL 2",
-        "new_name" : "c2"
-      },
-      {
-        "column" : "value",
-        "new_name" : "v.csv"
-      }
-	  ]
-  },
-  "label-name": [
+  "sequence": 1,
+  "input-directory": [
     {
-      "name" : "test-1.xlsx",
-      "label" : "t1"
+      "path" : "./"
     }
-  ]
+  ],
+  "output-directory": "./output",
+  "multi-file": false
 }

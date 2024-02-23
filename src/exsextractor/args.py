@@ -8,10 +8,44 @@ import os
 import argparse
 
 
+# Namespace(
+    # label_name=[],
+    # unique=False,
+    # unique_file=[],
+    # unique_sheet=[],
+    # unique_count=False,
+    # input=[{input file}],                 required
+    # list=[],
+    # list_config=[],
+    # config=[],
+    # gen_config_json=False,
+    # gen_config_xlsx=False,
+    # out=['output'],
+    # format_out=['xlsx'],
+    # delimiter=[';'],
+    # multi_file=False,
+    # multi_proc=[1],
+    # multi_thr=[1],
+    # one_column_capture=True,
+    # value=True,
+    # digit=False,
+    # word=False,
+    # text=False,
+    # string=False,
+    # raw=False,
+    # regex=[],
+    # include_column=[],
+    # exclude_column=[],
+    # rename=[],
+    # custom=[],
+    # sequence=1,
+    # input_directory=[],
+    # output_directory=[os.getcwd()])
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog='Excel String Extractor CLI (exsextractor)',
-        description='''exsextractor is a Python script that scans Excel and CSV files,
+        description='''exsextractor is a Python script that scans Excel files,
 extracting all strings from every cell and consolidating them into one or more output files.''',
         epilog='''.
 .
@@ -28,11 +62,11 @@ extracting all strings from every cell and consolidating them into one or more o
         nargs='+',
         default=[],
         type=pair_parser('==', '%'),
-        metavar=('COLUMN_NAME==LABEL'),
+        metavar=('NAME==LABEL'),
         help='''creates labels identifying files, sheets, columns,
 callable in command line commands
 to make the command line string more readable;
-the arguments passed must follow the following pattern: <COLUMN_NAME>==<LABEL>;
+the arguments passed must follow the following pattern: <NAME>==<LABEL>;
 to use the double equal character you need to escape `%%==`;
 Examples:
 -ln file.xlsx==f1 "SHEET %%== 1 A == S1A" string==S value==V -ex V S seq
@@ -131,7 +165,7 @@ the configuration file will contain all the custom values passed from the comman
     output_group.add_argument(
         '-o', '--out',
         nargs=1,
-        default=[],
+        default=['output'],
         metavar=('FILE_NAME'),
         help='''the name of the output file with or without extension;
 the default name is "output.xlsx";
@@ -155,6 +189,13 @@ default = "xlsx"''')
         help='''delimiter if the format is csv;
 default = ";"''')
 
+    output_group.add_argument(
+        '-mf', '--multi-file',
+        default=False,
+        action='store_true',
+        help='''n files are generated for n processed files (default a single overall file is generated);
+the output files are named by default original_file_name.{--out argument}.xlsx''')
+    
     processing_group = parser.add_argument_group('processing', '''Internally a fileList contains 1 or n files to be processed;
 for each file in fileList execute result = process_file(file);
 process_file() is executed in parallel by a process p_n in Pool;
@@ -290,17 +331,6 @@ rename the `value` column to `"COL= 3"`
 ''')
 
     columns_group.add_argument(
-        '-seq', '--sequence',
-        default=1,
-        type=int,
-        choices=[0, 1, 2],
-        metavar=('CODE'),
-        help='''changes the depth level of the sequential number associated with the record;
--ic seq 0: adds the sequential number column at cell level (never resets)
--ic seq 1: adds the sequential number column at sheet level (resets with each sheet)
--ic seq 2: adds the sequential number column at file level (resets with each file)''')
-
-    columns_group.add_argument(
         '-c', '--custom',
         nargs='+',
         default=[],
@@ -314,6 +344,18 @@ to use the `::` string you need to escape `%%::`;
 Examples:
 -c col1::[0-9]+ col2::[a-zA-Z]{3,8} "col3::foo bar[0-9]+"
 ''')
+
+    columns_group.add_argument(
+        '-seq', '--sequence',
+        default=1,
+        type=int,
+        choices=[0, 1, 2],
+        metavar=('CODE'),
+        help='''changes the depth level of the sequential number associated with the record;
+-ic seq 0: adds the sequential number column at cell level (never resets)
+-ic seq 1: adds the sequential number column at sheet level (resets with each sheet)
+-ic seq 2: adds the sequential number column at file level (resets with each file)
+(Default: 1)''')
 
     paths_group = parser.add_argument_group('paths', 'options for file system')
 
@@ -331,6 +373,7 @@ the program will search for a match in all the paths provided as arguments;''')
         default=[os.getcwd()],
         metavar=('PATH'),
         help='''specifies the output directory;
-by default the directory from which the program is launched is used''')
+by default the directory from which the program is launched is used;
+if the directory does not exist it creates it''')
 
     return parser.parse_args()
