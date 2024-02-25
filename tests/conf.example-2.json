@@ -1,0 +1,47 @@
+{
+  "label_name": [
+    ["test_list.xlsx","tl"],
+    ["test_1.xlsx","t1"]
+  ],
+  "unique" : false,
+  "unique_file": [
+    "t1"
+  ],
+  "unique_sheet": [],
+  "unique_count" : true,
+  "out": "output",
+  "format_out": "xlsx",
+  "delimiter": ";",
+  "multi_file": false,
+  "multi_proc": 4,
+  "multi_thr": 8,
+  "one_column_capture": true,
+  "value": true,
+  "digit": false,
+  "word": true,
+  "text": false,
+  "string": false,
+  "raw": false,
+  "regex": "test_[a-bA-Z]*",
+  "include_column": [
+    "file",
+    "sheet",
+    "seq",
+    "type"
+  ],
+  "exclude_column": [],
+  "rename": [
+    ["value","VALUE"],
+    ["seq","PROG"],
+    ["count","COUNT"]
+  ],
+  "custom": [
+    ["COL 1","test1_[a-bA-Z]*"],
+    ["COL 2","test2_[a-bA-Z]*"]
+  ],
+  "sequence": 1,
+  "input_directory": [
+    "./"
+  ],
+  "output_directory": "./output"
+}

@@ -1,6 +1,5 @@
 
 from .exsextractor import (
-    test,
     main
 )
 

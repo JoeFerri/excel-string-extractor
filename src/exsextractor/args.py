@@ -1,11 +1,15 @@
 """Args for exsextractor."""
 
+# args.py
+
 from .utils import nargs_range
 from .utils import bool_parser
 from .utils import pair_parser
 from . import __version__
 import os
+import sys
 import argparse
+import types
 
 
 # Namespace(
@@ -40,7 +44,23 @@ import argparse
     # custom=[],
     # sequence=1,
     # input_directory=[],
-    # output_directory=[os.getcwd()])
+    # output_directory=[os.getcwd()]
+
+
+def check_arg (self: argparse.Namespace, arg: str) -> bool:
+    # assumo che ogni argomento possa essere soltanto un booleano, un intero o una lista
+    arg = arg.lstrip('-').replace('-', '_')
+    arg_value = self.__dict__[arg]
+    return type(arg_value) == bool or type(arg_value) == int or type(arg_value) == list and len(arg_value) > 0
+
+
+
+def print_exit (self: argparse.ArgumentParser, msg: str):
+    # stampa su stderr il messaggio di errore e termina l'esecuzione
+    print("", file=sys.stderr)
+    self.print_usage(file=sys.stderr)
+    self.exit(message="\n" + msg)
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -102,7 +122,7 @@ exclude the columns value, string and seq''')
 
     files_or_list_group = parser.add_argument_group('files or list', 'files or list of input files')
 
-    exclusive_files_or_list_group = files_or_list_group.add_mutually_exclusive_group(required=True)
+    exclusive_files_or_list_group = files_or_list_group.add_mutually_exclusive_group(required=False)
 
     exclusive_files_or_list_group.add_argument(
         '-i', '--input',
@@ -121,7 +141,7 @@ exclude the columns value, string and seq''')
 LIST_SHEET [str]: the name of the sheet where the list is inserted
 if the list is an .xlsx file, then the file names are in the first sheet in column A starting from row 1 or 2;
 if the file does not correspond to the Excel format and the LIST_SHEET argument is passed, the latter is ignored but a warning is generated;''')
-
+    
     exclusive_files_or_list_group.add_argument(
         '-lc', '--list-config',
         nargs=3,
@@ -376,4 +396,14 @@ the program will search for a match in all the paths provided as arguments;''')
 by default the directory from which the program is launched is used;
 if the directory does not exist it creates it''')
 
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    # aggiunge il metodo print_exit
+    parser.print_exit = types.MethodType(print_exit, parser)
+    # aggiunge il metodo print_exit
+    args.check = types.MethodType(check_arg, args)
+    
+    if (not args.check('--input') and not args.check('--list') and not args.check('--list-config') and not args.check('--config')):
+        parser.print_exit("one of the arguments -i/--input -l/--list -lc/--list-config or -co/--config is required")
+        
+    return (parser, args)
