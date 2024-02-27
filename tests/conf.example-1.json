@@ -9,7 +9,7 @@
   ],
   "unique_sheet": [],
   "unique_count" : true,
-  "input": [],
+  "input": null,
   "list": {
     "file_name": "test_list.xlsx",
 	  "sheets" : {

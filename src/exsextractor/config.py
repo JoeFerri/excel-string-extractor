@@ -3,8 +3,13 @@
 # config.py
 
 
+import json
 from enum import Enum, auto
+from openpyxl import load_workbook
+from openpyxl import Workbook
+from openpyxl.worksheet.worksheet import Worksheet
 import argparse
+
 from .args import parse_args
 
 
@@ -15,11 +20,97 @@ class ConfigType(Enum):
     CONFIG = auto()
 
 
+def get_config_by_template (path):
+    with open(path, 'r') as file:
+        return json.load(file)
+
+
 def check_config_list_config (config_2):
-    if (isinstance(config_2, object)
-        and ('input' in config_2
-        or 'list' in config_2)):
-        raise Exception('config_2 must contain either "input", "list" or "list_config"')
+    # TODO cosa volevo controllare?
+    return True
+    # if (isinstance(config_2, object)
+    #     and ('input' in config_2
+    #     or 'list' in config_2)):
+    #     raise Exception('config_2 must contain either "input", "list" or "list_config"')
+
+
+
+def get_config_from_sheet (list_data):
+    config_2 = {}
+    
+    # TODO
+    
+    return config_2
+
+
+def get_config_from_file (file_name, config_sheet = None):
+    if (file_name.endswith('.json')):
+        return get_config_from_file_json(file_name)
+    elif (file_name.endswith('.xlsx')):
+        return get_config_from_file_xlsx(file_name, config_sheet)
+    raise Exception('file type not supported')
+
+
+def get_config_from_file_json (file_name):
+    with open(file_name, 'r') as file:
+        return json.load(file)
+
+
+# TODO deve controllare anche tutte le directory passate in config?
+def get_config_from_file_xlsx (file_name, config_sheet = None):
+    wb = load_workbook(file_name, data_only=True)
+    if config_sheet is None:
+        ws = wb.worksheets[0]
+    else:
+        ws = wb[config_sheet]
+
+    # Trova la colonna valorizzata
+    value_column_index = 0 # values_only = True ~> row[index] (0-based)
+    # ws[index] (1-based)
+    for cell in ws[1]:
+        if cell.value == 'x':
+            break
+        value_column_index += 1
+
+    config = {}
+
+    row_num = 2 # inizio la lettura dalla riga 2 - ws[row_num] (1-based)
+    for row in ws.iter_rows(min_row = 2, max_row = ws.max_row, min_col = 1, values_only = True):
+        # row[index] (0-based)
+        if row[0] == 'input':
+            if row[value_column_index] != None:
+                config['input'] = row[value_column_index]
+
+        elif row[0] == 'label_name' and row[1] == 'name':
+            # Trova la riga successiva di soli valori
+            # next_row[index] (0-based)
+            next_row = [cell.value for cell in ws[row_num + 1]]
+            if next_row[0] != 'label_name' or next_row[1] != 'label':
+                raise ValueError("Errore: la riga successiva a 'label_name' deve contenere 'label_name' e 'label'")
+            if not 'label_name' in config:
+                config['label_name'] = []
+            column = value_column_index
+            max_column_index = max(len(row), len(next_row)) -1 # (0-based)
+            # scansiona le celle a destra della colonna valorizzata
+            while column <= max_column_index:
+                name = row[column]
+                label = next_row[column]
+                if not name is None and not label is None:
+                    config['label_name'].append((name,label))
+                elif (name is None and not label is None) or (not name is None and label is None):
+                    raise ValueError("Errore: 'label_name' deve avere nome e label")
+                # nel caso name is None and label is None non fa niente
+                column += 1
+
+        if row[0] == 'unique':
+            if row[value_column_index] != None:
+                config['unique'] = row[value_column_index]
+        # TODO
+
+        row_num += 1
+    print("\nget_config_from_file_xlsx:")
+    print(config)
+    return config
 
 
 def config_align (config: dict, args: argparse.Namespace):
@@ -66,7 +157,7 @@ def config_2align (config: dict, config_2: dict, config_type: ConfigType):
     if 'unique_count' in config_2: config['unique_count'] = config_2['unique_count']
     
     if config_type == ConfigType.CONFIG:
-        if 'input' in config_2: config['input'].extend(config_2['input'])
+        if 'input' in config_2: config['input'] = config_2['input']
         if 'list' in config_2 and 'file_name' in config_2['list']: config['list']['file_name'] = config_2['list']['file_name']
         if 'list' in config_2 and 'sheets' in config_2['list'] and 'list_sheet' in config_2['list']['sheets']: config['list']['sheets']['list_sheet'] = config_2['list']['sheets']['list_sheet']
         if 'list' in config_2 and 'sheets' in config_2['list'] and 'config_sheet' in config_2['list']['sheets']: config['list']['sheets']['config_sheet'] = config_2['list']['sheets']['config_sheet']
